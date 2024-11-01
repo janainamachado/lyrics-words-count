@@ -37,3 +37,18 @@ const getArtistSongs = async (artistId) =>
         return [];
     }
 };
+
+const analyzeLyrics = (lyrics) => {
+    const words = lyrics
+        .split(/\s+/)
+        .filter((word) => word);
+    
+    const wordCount = {};
+
+    words.forEach((word) => {
+        wordCcount(word) = (wordCount[word] || 0) +1;
+    });
+
+    return wordCount;
+
+}
