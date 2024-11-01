@@ -46,9 +46,35 @@ const analyzeLyrics = (lyrics) => {
     const wordCount = {};
 
     words.forEach((word) => {
-        wordCcount(word) = (wordCount[word] || 0) +1;
+        wordCount(word) = (wordCount[word] || 0) +1;
     });
 
     return wordCount;
+};
 
-}
+app.get('/analyze/:artistId', async (req, res) => {
+    const { artistId } = req.params;
+    try {
+        const songs = await getArtistSongs(artistId);
+        let allLyrics = '';
+
+        for (const song of songs) {
+            const lyrics = await getLyricsFromUrl(song.url);
+            allLyrics += ' ' + lyrics;
+        }
+
+        const wordCount = analyzeLyrics(allLyrics);
+
+        res.json({
+            artistId,
+            totalSongs: songs.length,
+            wordCount,
+        });
+    } catch (error) {
+        res.status(500).send('Error analyzing lyrics');
+    }
+});
+
+app.listen(port, () => {
+    console.log(`Server is running on http://localhost:${port}`);
+});
